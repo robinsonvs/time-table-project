@@ -94,6 +94,8 @@ Teacher Hours Inquiry (RF009)
 
 ### Class Diagram
 
+![](/img/classDiagram20240505.png)
+
 ### ER Diagram of the Database
 
 ![](/img/database20240505.png)
