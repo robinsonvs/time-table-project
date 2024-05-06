@@ -88,7 +88,9 @@ Teacher Hours Inquiry (RF009)
 - Inquiry of teachers with different workload than planned.
 - Information: teacher name, hours to be allocated, allocated hours.
 
-### Use Case Diagram
+### Use Case
+
+![](/img/usecase20240505.png)
 
 ### Class Diagram
 
