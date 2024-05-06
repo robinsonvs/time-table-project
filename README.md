@@ -90,12 +90,11 @@ Teacher Hours Inquiry (RF009)
 
 ### Use Case Diagram
 
-![](/img/database20240505.png)
-
 ### Class Diagram
 
 ### ER Diagram of the Database
 
+![](/img/database20240505.png)
 
 ### Main frameworks used:
 
