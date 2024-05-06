@@ -90,7 +90,7 @@ Teacher Hours Inquiry (RF009)
 
 ### Use Case Diagram
 
-![alt text](https://github.com/robinsonvs/time-table-project/img/master/database20240505.png?raw=true)
+![](https://github.com/robinsonvs/time-table-project/img/database20240505.png?raw=true)
 
 ### Class Diagram
 
