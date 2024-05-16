@@ -9,10 +9,10 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
+        "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
+            "email": "your@mail.com"
         },
         "license": {
             "name": "Apache 2.0",
@@ -23,14 +23,44 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/user": {
-            "get": {
-                "security": [
+        "/auth/login": {
+            "post": {
+                "description": "Auth Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Auth Login",
+                "operationId": "auth-login",
+                "parameters": [
                     {
-                        "ApiKeyAuth": []
+                        "description": "Auth Login Input",
+                        "name": "Login",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.LoginDTO"
+                        }
                     }
                 ],
-                "description": "Get many users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.UserAuthToken"
+                        }
+                    }
+                }
+            }
+        },
+        "/user": {
+            "post": {
+                "description": "Endpoint for create user",
                 "consumes": [
                     "application/json"
                 ],
@@ -40,22 +70,24 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Get many users",
+                "summary": "Create new user",
+                "parameters": [
+                    {
+                        "description": "Create user dto",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateUserDto"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.ManyUsersResponse"
-                        }
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httperr.RestErr"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/httperr.RestErr"
                         }
@@ -120,14 +152,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/user/password/{id}": {
+        "/user/list-all": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Endpoint for Update user password",
+                "description": "Get many users",
                 "consumes": [
                     "application/json"
                 ],
@@ -137,31 +169,22 @@ const docTemplate = `{
                 "tags": [
                     "user"
                 ],
-                "summary": "Update user password",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "user id",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update user password dto",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UpdateUserPasswordDto"
-                        }
-                    }
-                ],
+                "summary": "Get many users",
                 "responses": {
                     "200": {
-                        "description": "OK"
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.ManyUsersResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/httperr.RestErr"
                         }
@@ -279,6 +302,61 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/{id}/password": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Endpoint for Update user password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "user id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update user password dto",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserPasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -301,6 +379,23 @@ const docTemplate = `{
                 "password": {
                     "type": "string",
                     "maxLength": 30,
+                    "minLength": 8
+                }
+            }
+        },
+        "dto.LoginDTO": {
+            "type": "object",
+            "required": [
+                "email",
+                "password"
+            ],
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string",
+                    "maxLength": 40,
                     "minLength": 8
                 }
             }
@@ -380,6 +475,14 @@ const docTemplate = `{
                 }
             }
         },
+        "response.UserAuthToken": {
+            "type": "object",
+            "properties": {
+                "access_token": {
+                    "type": "string"
+                }
+            }
+        },
         "response.UserResponse": {
             "type": "object",
             "properties": {
@@ -400,17 +503,24 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "ApiKeyAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "petstore.swagger.io",
-	BasePath:         "/v2",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "Time Table Allocation API",
-	Description:      "",
+	Title:            "Time Table API",
+	Description:      "This is an auto-generated API Docs.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

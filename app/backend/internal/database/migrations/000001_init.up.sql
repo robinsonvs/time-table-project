@@ -84,13 +84,13 @@ CREATE TABLE class (
 
 
 CREATE TABLE users (
-       id BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
-       uuid UUID NOT NULL DEFAULT gen_random_uuid(),
+       idUser BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
+       id UUID NOT NULL DEFAULT gen_random_uuid(),
        name VARCHAR(255) NOT NULL,
        email VARCHAR(255) NOT NULL UNIQUE,
        password VARCHAR(255) NOT NULL,
        created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-       updated_at TIMESTAMP(3) NOT NULL
+       updated_at TIMESTAMP(3)
 );
 
 CREATE INDEX idx_course_name ON course(name);
