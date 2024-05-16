@@ -100,6 +100,11 @@ Teacher Hours Inquiry (RF009)
 
 ![](/img/database20240505.png)
 
+
+### API
+
+![](/img/api_user.png)
+
 ### Main frameworks used:
 
 * [PostgreSQL](https://www.postgresql.org/) - database
