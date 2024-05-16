@@ -103,7 +103,7 @@ Teacher Hours Inquiry (RF009)
 
 ### API
 
-![](/img/api_user.png)
+![](/img/api_user.jpg)
 
 ### Main frameworks used:
 
