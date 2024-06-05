@@ -3,16 +3,17 @@ package utils
 import (
 	"errors"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/google/uuid"
 	"github.com/robinsonvs/time-table-project/config/env"
 	"net/http"
 	"strings"
 )
 
 type CurrentUser struct {
-	ID    string `json:"id"`
-	Email string `json:"email"`
-	Name  string `json:"name"`
-	Exp   int64  `json:"exp,omitempty"`
+	UUID  uuid.UUID `json:"uuid"`
+	Email string    `json:"email"`
+	Name  string    `json:"name"`
+	Exp   int64     `json:"exp,omitempty"`
 	jwt.RegisteredClaims
 }
 

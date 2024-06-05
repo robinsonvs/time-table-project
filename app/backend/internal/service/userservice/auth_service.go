@@ -23,7 +23,7 @@ func (s *service) Login(ctx context.Context, u dto.LoginDTO) (*response.UserAuth
 		return nil, errors.New("user not found")
 	}
 
-	userPass, err := s.repo.GetUserPassword(ctx, user.ID)
+	userPass, err := s.repo.GetUserPassword(ctx, user.UUID)
 	if err != nil {
 		slog.Error("error to search user password", "err", err, slog.String("package", "userservice"))
 		return nil, errors.New("error to search user password")
@@ -36,7 +36,7 @@ func (s *service) Login(ctx context.Context, u dto.LoginDTO) (*response.UserAuth
 	}
 
 	_, token, _ := env.Env.TokenAuth.Encode(map[string]interface{}{
-		"id":    user.ID,
+		"uuid":  user.UUID,
 		"email": u.Email,
 		"name":  user.Name,
 		"exp":   time.Now().Add(time.Second * time.Duration(env.Env.JwtExpiresIn)).Unix(),

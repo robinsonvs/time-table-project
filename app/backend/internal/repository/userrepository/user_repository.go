@@ -3,19 +3,17 @@ package userrepository
 import (
 	"context"
 	"database/sql"
+	"github.com/google/uuid"
 	"github.com/robinsonvs/time-table-project/internal/database/sqlc"
 	"github.com/robinsonvs/time-table-project/internal/entity"
-	"time"
 )
 
 func (r *repository) CreateUser(ctx context.Context, u *entity.UserEntity) error {
 	err := r.queries.CreateUser(ctx, sqlc.CreateUserParams{
-		ID:        u.ID,
-		Name:      u.Name,
-		Email:     u.Email,
-		Password:  u.Password,
-		CreatedAt: u.CreatedAt,
-		UpdatedAt: u.UpdatedAt,
+		Uuid:     u.UUID,
+		Name:     u.Name,
+		Email:    u.Email,
+		Password: u.Password,
 	})
 	if err != nil {
 		return err
@@ -31,24 +29,24 @@ func (r *repository) FindUserByEmail(ctx context.Context, email string) (*entity
 	}
 	userEntity := entity.UserEntity{
 		ID:    user.ID,
+		UUID:  user.Uuid,
 		Name:  user.Name,
 		Email: user.Email,
 	}
 	return &userEntity, nil
 }
 
-func (r *repository) FindUserByID(ctx context.Context, id string) (*entity.UserEntity, error) {
-	user, err := r.queries.FindUserByID(ctx, id)
+func (r *repository) FindUserByID(ctx context.Context, uuid uuid.UUID) (*entity.UserEntity, error) {
+	user, err := r.queries.FindUserByID(ctx, uuid)
 	if err != nil {
 		return nil, err
 	}
 
 	userEntity := entity.UserEntity{
-		ID:        user.ID,
-		Name:      user.Name,
-		Email:     user.Email,
-		CreatedAt: user.CreatedAt,
-		UpdatedAt: user.UpdatedAt,
+		ID:    user.ID,
+		UUID:  user.Uuid,
+		Name:  user.Name,
+		Email: user.Email,
 	}
 
 	return &userEntity, nil
@@ -56,10 +54,9 @@ func (r *repository) FindUserByID(ctx context.Context, id string) (*entity.UserE
 
 func (r *repository) UpdateUser(ctx context.Context, u *entity.UserEntity) error {
 	err := r.queries.UpdateUser(ctx, sqlc.UpdateUserParams{
-		ID:        u.ID,
-		Name:      sql.NullString{String: u.Name, Valid: u.Name != ""},
-		Email:     sql.NullString{String: u.Email, Valid: u.Email != ""},
-		UpdatedAt: u.UpdatedAt,
+		Uuid:  u.UUID,
+		Name:  sql.NullString{String: u.Name, Valid: u.Name != ""},
+		Email: sql.NullString{String: u.Email, Valid: u.Email != ""},
 	})
 
 	if err != nil {
@@ -69,8 +66,8 @@ func (r *repository) UpdateUser(ctx context.Context, u *entity.UserEntity) error
 	return nil
 }
 
-func (r *repository) DeleteUser(ctx context.Context, id string) error {
-	err := r.queries.DeleteUser(ctx, id)
+func (r *repository) DeleteUser(ctx context.Context, uuid uuid.UUID) error {
+	err := r.queries.DeleteUser(ctx, uuid)
 
 	if err != nil {
 		return err
@@ -88,11 +85,10 @@ func (r *repository) FindManyUsers(ctx context.Context) ([]entity.UserEntity, er
 	var usersEntity []entity.UserEntity
 	for _, user := range users {
 		userEntity := entity.UserEntity{
-			ID:        user.ID,
-			Name:      user.Name,
-			Email:     user.Email,
-			CreatedAt: user.CreatedAt,
-			UpdatedAt: user.UpdatedAt,
+			ID:    user.ID,
+			UUID:  user.Uuid,
+			Name:  user.Name,
+			Email: user.Email,
 		}
 
 		usersEntity = append(usersEntity, userEntity)
@@ -100,11 +96,10 @@ func (r *repository) FindManyUsers(ctx context.Context) ([]entity.UserEntity, er
 	return usersEntity, nil
 }
 
-func (r *repository) UpdatePassword(ctx context.Context, pass, id string) error {
+func (r *repository) UpdatePassword(ctx context.Context, pass string, uuid uuid.UUID) error {
 	err := r.queries.UpdatePassword(ctx, sqlc.UpdatePasswordParams{
-		ID:        id,
-		Password:  pass,
-		UpdatedAt: time.Now(),
+		Uuid:     uuid,
+		Password: pass,
 	})
 
 	if err != nil {
@@ -114,8 +109,8 @@ func (r *repository) UpdatePassword(ctx context.Context, pass, id string) error 
 	return nil
 }
 
-func (r *repository) GetUserPassword(ctx context.Context, id string) (string, error) {
-	pass, err := r.queries.GetUserPassword(ctx, id)
+func (r *repository) GetUserPassword(ctx context.Context, uuid uuid.UUID) (string, error) {
+	pass, err := r.queries.GetUserPassword(ctx, uuid)
 
 	if err != nil {
 		return "", err

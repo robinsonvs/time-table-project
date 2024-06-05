@@ -1,4 +1,19 @@
 definitions:
+  dto.CreateCourseDto:
+    properties:
+      location:
+        type: string
+      modality:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - location
+    - modality
+    - name
+    type: object
   dto.CreateUserDto:
     properties:
       email:
@@ -27,6 +42,17 @@ definitions:
     required:
     - email
     - password
+    type: object
+  dto.UpdateCourseDto:
+    properties:
+      location:
+        type: string
+      modality:
+        type: string
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
     type: object
   dto.UpdateUserDto:
     properties:
@@ -72,6 +98,24 @@ definitions:
       message:
         type: string
     type: object
+  response.CourseResponse:
+    properties:
+      location:
+        type: string
+      modality:
+        type: string
+      name:
+        type: string
+      uuid:
+        type: string
+    type: object
+  response.ManyCoursesResponse:
+    properties:
+      courses:
+        items:
+          $ref: '#/definitions/response.CourseResponse'
+        type: array
+    type: object
   response.ManyUsersResponse:
     properties:
       users:
@@ -86,15 +130,11 @@ definitions:
     type: object
   response.UserResponse:
     properties:
-      created_at:
-        type: string
       email:
-        type: string
-      id:
         type: string
       name:
         type: string
-      updated_at:
+      uuid:
         type: string
     type: object
 info:
@@ -132,7 +172,170 @@ paths:
       summary: Auth Login
       tags:
       - auth
-  /user:
+  /courses:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create course
+      parameters:
+      - description: Create course dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateCourseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new course
+      tags:
+      - course
+  /courses/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete course by uuid
+      parameters:
+      - description: course uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete course
+      tags:
+      - course
+    get:
+      consumes:
+      - application/json
+      description: Get course by uuid
+      parameters:
+      - description: course uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Course details
+      tags:
+      - course
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for update course
+      parameters:
+      - description: course uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update course dto
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/dto.UpdateCourseDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update course
+      tags:
+      - course
+  /courses/list-all:
+    get:
+      consumes:
+      - application/json
+      description: Get many courses
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyCoursesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many courses
+      tags:
+      - course
+  /users:
     patch:
       consumes:
       - application/json
@@ -192,15 +395,15 @@ paths:
       summary: Create new user
       tags:
       - user
-  /user/{id}:
+  /users/{uuid}:
     delete:
       consumes:
       - application/json
-      description: delete user by id
+      description: delete user by uuid
       parameters:
-      - description: user id
+      - description: user uuid
         in: path
-        name: id
+        name: uuid
         required: true
         type: string
       produces:
@@ -228,11 +431,11 @@ paths:
     get:
       consumes:
       - application/json
-      description: Get user by id
+      description: Get user by uuid
       parameters:
-      - description: user id
+      - description: user uuid
         in: path
-        name: id
+        name: uuid
         required: true
         type: string
       produces:
@@ -259,15 +462,15 @@ paths:
       summary: User details
       tags:
       - user
-  /user/{id}/password:
+  /users/{uuid}/password:
     patch:
       consumes:
       - application/json
       description: Endpoint for Update user password
       parameters:
-      - description: user id
+      - description: user uuid
         in: path
-        name: id
+        name: uuid
         required: true
         type: string
       - description: Update user password dto
@@ -294,7 +497,7 @@ paths:
       summary: Update user password
       tags:
       - user
-  /user/list-all:
+  /users/list-all:
     get:
       consumes:
       - application/json

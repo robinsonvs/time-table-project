@@ -5,7 +5,6 @@
 package sqlc
 
 import (
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
@@ -34,23 +33,23 @@ type Course struct {
 	ID       int64
 	Uuid     uuid.UUID
 	Name     string
-	Modality sql.NullString
-	Location sql.NullString
+	Modality string
+	Location string
 }
 
 type Discipline struct {
 	ID       int64
 	Uuid     uuid.UUID
 	Name     string
-	Credits  sql.NullInt32
+	Credits  int32
 	CourseID int64
 }
 
 type Parameterization struct {
 	ID                      int64
 	Uuid                    uuid.UUID
-	Maxcreditstooffer       sql.NullInt32
-	Numclassesperdiscipline sql.NullInt32
+	Maxcreditstooffer       int32
+	Numclassesperdiscipline int32
 	SemesterID              int64
 	CourseID                int64
 }
@@ -59,7 +58,7 @@ type Professor struct {
 	ID              int64
 	Uuid            uuid.UUID
 	Name            string
-	Hourstoallocate sql.NullInt32
+	Hourstoallocate int32
 }
 
 type Proposal struct {
@@ -76,11 +75,9 @@ type Semester struct {
 }
 
 type User struct {
-	ID        int64
-	Uuid      uuid.UUID
-	Name      string
-	Email     string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID       int64
+	Uuid     uuid.UUID
+	Name     string
+	Email    string
+	Password string
 }

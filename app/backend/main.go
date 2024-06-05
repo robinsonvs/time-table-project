@@ -8,9 +8,11 @@ import (
 	_ "github.com/robinsonvs/time-table-project/docs"
 	"github.com/robinsonvs/time-table-project/internal/database"
 	"github.com/robinsonvs/time-table-project/internal/database/sqlc"
+	"github.com/robinsonvs/time-table-project/internal/handler"
 	"github.com/robinsonvs/time-table-project/internal/handler/routes"
-	"github.com/robinsonvs/time-table-project/internal/handler/userhandler"
+	"github.com/robinsonvs/time-table-project/internal/repository/courserepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/userrepository"
+	"github.com/robinsonvs/time-table-project/internal/service/courseservice"
 	"github.com/robinsonvs/time-table-project/internal/service/userservice"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log/slog"
@@ -47,18 +49,21 @@ func main() {
 	router := chi.NewRouter()
 	queries := sqlc.New(dbConnection)
 
-	// user
 	userRepo := userrepository.NewUserRepository(dbConnection, queries)
+	courseRepo := courserepository.NewCourseRepository(dbConnection, queries)
+
 	newUserService := userservice.NewUserService(userRepo)
-	newUserHandler := userhandler.NewUserHandler(newUserService)
+	newCourseService := courseservice.NewCourseService(courseRepo)
+
+	newHandler := handler.NewHandler(newUserService, newCourseService)
 
 	//enableCors(router)
 
 	// init routes
-	routes.InitUserRoutes(router, newUserHandler)
+	routes.InitRoutes(router, newHandler)
 
 	router.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), // The url pointing to API definition"
+		httpSwagger.URL("http://localhost:8080/swagger/doc.json"),
 	))
 
 	port := fmt.Sprintf(":%s", env.Env.GoPort)

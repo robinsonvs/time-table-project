@@ -14,8 +14,8 @@ CREATE TABLE if not exists course (
                                       id BIGINT PRIMARY KEY DEFAULT nextval('course_id_seq'),
     uuid UUID NOT NULL DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
-    modality VARCHAR(50),
-    location VARCHAR(255)
+    modality VARCHAR(50) NOT NULL,
+    location VARCHAR(255) NOT NULL
     );
 
 CREATE TABLE if not exists semester (
@@ -28,14 +28,14 @@ CREATE TABLE if not exists professor (
                                          id BIGINT PRIMARY KEY DEFAULT nextval('professor_id_seq'),
     uuid UUID NOT NULL DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
-    hoursToAllocate INT
+    hoursToAllocate INT NOT NULL
     );
 
 CREATE TABLE if not exists discipline (
                                           id BIGINT PRIMARY KEY DEFAULT nextval('discipline_id_seq'),
     uuid UUID NOT NULL DEFAULT gen_random_uuid(),
     name VARCHAR(255) NOT NULL,
-    credits INT,
+    credits INT NOT NULL,
     course_id BIGINT not null,
     constraint discipline_course_id_fk foreign key(course_id) references course(id)
     );
@@ -52,8 +52,8 @@ CREATE TABLE if not exists availability (
 CREATE TABLE parameterization (
                                   id BIGINT PRIMARY KEY DEFAULT nextval('parameterization_id_seq'),
                                   uuid UUID NOT NULL DEFAULT gen_random_uuid(),
-                                  maxCreditsToOffer INT,
-                                  numClassesPerDiscipline INT,
+                                  maxCreditsToOffer INT NOT NULL,
+                                  numClassesPerDiscipline INT NOT NULL,
                                   semester_id BIGINT not null,
                                   course_id BIGINT not null,
                                   constraint parameterization_semester_id_fk foreign key(semester_id) references semester(id),
@@ -84,13 +84,11 @@ CREATE TABLE class (
 
 
 CREATE TABLE users (
-       idUser BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
-       id UUID NOT NULL DEFAULT gen_random_uuid(),
+       id BIGINT PRIMARY KEY DEFAULT nextval('user_id_seq'),
+       uuid UUID NOT NULL DEFAULT gen_random_uuid(),
        name VARCHAR(255) NOT NULL,
        email VARCHAR(255) NOT NULL UNIQUE,
-       password VARCHAR(255) NOT NULL,
-       created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-       updated_at TIMESTAMP(3)
+       password VARCHAR(255) NOT NULL
 );
 
 CREATE INDEX idx_course_name ON course(name);

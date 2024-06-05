@@ -8,56 +8,52 @@ package sqlc
 import (
 	"context"
 	"database/sql"
-	"time"
+
+	"github.com/google/uuid"
 )
 
 const createUser = `-- name: CreateUser :exec
-INSERT INTO users (id, name, email, password, created_at, updated_at)
-VALUES ($1, $2, $3, $4, $5, $6)
+INSERT INTO users (uuid, name, email, password)
+VALUES ($1, $2, $3, $4)
 `
 
 type CreateUserParams struct {
-	ID        string
-	Name      string
-	Email     string
-	Password  string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Uuid     uuid.UUID
+	Name     string
+	Email    string
+	Password string
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
 	_, err := q.db.ExecContext(ctx, createUser,
-		arg.ID,
+		arg.Uuid,
 		arg.Name,
 		arg.Email,
 		arg.Password,
-		arg.CreatedAt,
-		arg.UpdatedAt,
 	)
 	return err
 }
 
 const deleteUser = `-- name: DeleteUser :exec
-DELETE FROM users WHERE id = $1
+DELETE FROM users WHERE uuid = $1
 `
 
-func (q *Queries) DeleteUser(ctx context.Context, id string) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
+func (q *Queries) DeleteUser(ctx context.Context, argUuid uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteUser, argUuid)
 	return err
 }
 
 const findManyUsers = `-- name: FindManyUsers :many
-SELECT u.id, u.name, u.email, u.created_At, u.updated_at
+SELECT u.id, u.uuid, u.name, u.email
 FROM users u
-ORDER BY u.created_at DESC
+ORDER BY u.name ASC
 `
 
 type FindManyUsersRow struct {
-	ID        string
-	Name      string
-	Email     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID    int64
+	Uuid  uuid.UUID
+	Name  string
+	Email string
 }
 
 func (q *Queries) FindManyUsers(ctx context.Context) ([]FindManyUsersRow, error) {
@@ -71,10 +67,9 @@ func (q *Queries) FindManyUsers(ctx context.Context) ([]FindManyUsersRow, error)
 		var i FindManyUsersRow
 		if err := rows.Scan(
 			&i.ID,
+			&i.Uuid,
 			&i.Name,
 			&i.Email,
-			&i.CreatedAt,
-			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -90,11 +85,12 @@ func (q *Queries) FindManyUsers(ctx context.Context) ([]FindManyUsersRow, error)
 }
 
 const findUserByEmail = `-- name: FindUserByEmail :one
-SELECT u.id, u.name, u.email FROM users u WHERE u.email = $1
+SELECT u.id, u.uuid, u.name, u.email FROM users u WHERE u.email = $1
 `
 
 type FindUserByEmailRow struct {
-	ID    string
+	ID    int64
+	Uuid  uuid.UUID
 	Name  string
 	Email string
 }
@@ -102,43 +98,46 @@ type FindUserByEmailRow struct {
 func (q *Queries) FindUserByEmail(ctx context.Context, email string) (FindUserByEmailRow, error) {
 	row := q.db.QueryRowContext(ctx, findUserByEmail, email)
 	var i FindUserByEmailRow
-	err := row.Scan(&i.ID, &i.Name, &i.Email)
+	err := row.Scan(
+		&i.ID,
+		&i.Uuid,
+		&i.Name,
+		&i.Email,
+	)
 	return i, err
 }
 
 const findUserByID = `-- name: FindUserByID :one
-SELECT u.id, u.name, u.email, u.created_At, u.updated_at
+SELECT u.id, u.uuid, u.name, u.email
 FROM users u
-WHERE u.id = $1
+WHERE u.uuid = $1
 `
 
 type FindUserByIDRow struct {
-	ID        string
-	Name      string
-	Email     string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID    int64
+	Uuid  uuid.UUID
+	Name  string
+	Email string
 }
 
-func (q *Queries) FindUserByID(ctx context.Context, id string) (FindUserByIDRow, error) {
-	row := q.db.QueryRowContext(ctx, findUserByID, id)
+func (q *Queries) FindUserByID(ctx context.Context, argUuid uuid.UUID) (FindUserByIDRow, error) {
+	row := q.db.QueryRowContext(ctx, findUserByID, argUuid)
 	var i FindUserByIDRow
 	err := row.Scan(
 		&i.ID,
+		&i.Uuid,
 		&i.Name,
 		&i.Email,
-		&i.CreatedAt,
-		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const getUserByID = `-- name: GetUserByID :one
-SELECT id, uuid, name, email, password, created_at, updated_at from users u where u.id = $1
+SELECT id, uuid, name, email, password from users u where u.uuid = $1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id int64) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByID, id)
+func (q *Queries) GetUserByID(ctx context.Context, argUuid uuid.UUID) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByID, argUuid)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -146,59 +145,49 @@ func (q *Queries) GetUserByID(ctx context.Context, id int64) (User, error) {
 		&i.Name,
 		&i.Email,
 		&i.Password,
-		&i.CreatedAt,
-		&i.UpdatedAt,
 	)
 	return i, err
 }
 
 const getUserPassword = `-- name: GetUserPassword :one
-SELECT u.password FROM users u WHERE u.id = $1
+SELECT u.password FROM users u WHERE u.uuid = $1
 `
 
-func (q *Queries) GetUserPassword(ctx context.Context, id string) (string, error) {
-	row := q.db.QueryRowContext(ctx, getUserPassword, id)
+func (q *Queries) GetUserPassword(ctx context.Context, argUuid uuid.UUID) (string, error) {
+	row := q.db.QueryRowContext(ctx, getUserPassword, argUuid)
 	var password string
 	err := row.Scan(&password)
 	return password, err
 }
 
 const updatePassword = `-- name: UpdatePassword :exec
-UPDATE users SET password = $2, updated_at = $3 WHERE id = $1
+UPDATE users SET password = $2 WHERE uuid = $1
 `
 
 type UpdatePasswordParams struct {
-	ID        string
-	Password  string
-	UpdatedAt time.Time
+	Uuid     uuid.UUID
+	Password string
 }
 
 func (q *Queries) UpdatePassword(ctx context.Context, arg UpdatePasswordParams) error {
-	_, err := q.db.ExecContext(ctx, updatePassword, arg.ID, arg.Password, arg.UpdatedAt)
+	_, err := q.db.ExecContext(ctx, updatePassword, arg.Uuid, arg.Password)
 	return err
 }
 
 const updateUser = `-- name: UpdateUser :exec
 UPDATE users SET
-                 name = COALESCE($3, name),
-                 email = COALESCE($4, email),
-                 updated_at = $2
-WHERE id = $1
+                 name = COALESCE($2, name),
+                 email = COALESCE($3, email)
+WHERE uuid = $1
 `
 
 type UpdateUserParams struct {
-	ID        string
-	UpdatedAt time.Time
-	Name      sql.NullString
-	Email     sql.NullString
+	Uuid  uuid.UUID
+	Name  sql.NullString
+	Email sql.NullString
 }
 
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) error {
-	_, err := q.db.ExecContext(ctx, updateUser,
-		arg.ID,
-		arg.UpdatedAt,
-		arg.Name,
-		arg.Email,
-	)
+	_, err := q.db.ExecContext(ctx, updateUser, arg.Uuid, arg.Name, arg.Email)
 	return err
 }
