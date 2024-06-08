@@ -10,9 +10,19 @@ import (
 	"github.com/robinsonvs/time-table-project/internal/database/sqlc"
 	"github.com/robinsonvs/time-table-project/internal/handler"
 	"github.com/robinsonvs/time-table-project/internal/handler/routes"
+	"github.com/robinsonvs/time-table-project/internal/repository/availabilityrepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/courserepository"
+	"github.com/robinsonvs/time-table-project/internal/repository/disciplinerepository"
+	"github.com/robinsonvs/time-table-project/internal/repository/parameterizationrepository"
+	"github.com/robinsonvs/time-table-project/internal/repository/professorrepository"
+	"github.com/robinsonvs/time-table-project/internal/repository/semesterrepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/userrepository"
+	"github.com/robinsonvs/time-table-project/internal/service/availabilityservice"
 	"github.com/robinsonvs/time-table-project/internal/service/courseservice"
+	"github.com/robinsonvs/time-table-project/internal/service/disciplineservice"
+	"github.com/robinsonvs/time-table-project/internal/service/parameterizationservice"
+	"github.com/robinsonvs/time-table-project/internal/service/professorservice"
+	"github.com/robinsonvs/time-table-project/internal/service/semesterservice"
 	"github.com/robinsonvs/time-table-project/internal/service/userservice"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"log/slog"
@@ -51,11 +61,23 @@ func main() {
 
 	userRepo := userrepository.NewUserRepository(dbConnection, queries)
 	courseRepo := courserepository.NewCourseRepository(dbConnection, queries)
+	semesterRepo := semesterrepository.NewSemesterRepository(dbConnection, queries)
+	professorRepo := professorrepository.NewProfessorRepository(dbConnection, queries)
+	disciplineRepo := disciplinerepository.NewDisciplineRepository(dbConnection, queries)
+	availabilityRepo := availabilityrepository.NewAvailabilityRepository(dbConnection, queries)
+	parameterizationRepo := parameterizationrepository.NewParameterizationRepository(dbConnection, queries)
 
 	newUserService := userservice.NewUserService(userRepo)
 	newCourseService := courseservice.NewCourseService(courseRepo)
+	newSemesterService := semesterservice.NewSemesterService(semesterRepo)
+	newProfessorService := professorservice.NewProfessorService(professorRepo)
+	newDisciplineService := disciplineservice.NewDisciplineService(disciplineRepo)
+	newAvailabilityService := availabilityservice.NewAvailabilityService(availabilityRepo)
+	newParameterizationService := parameterizationservice.NewParameterizationService(parameterizationRepo)
 
-	newHandler := handler.NewHandler(newUserService, newCourseService)
+	newHandler := handler.NewHandler(newUserService,
+		newCourseService, newSemesterService, newProfessorService,
+		newDisciplineService, newAvailabilityService, newParameterizationService)
 
 	//enableCors(router)
 

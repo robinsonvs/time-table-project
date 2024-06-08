@@ -1,9 +1,11 @@
 package entity
 
-type Discipline struct {
-	ID       int64  `json:"id"`
-	UUID     string `json:"uuid"`
-	Name     string `json:"name"`
-	Credits  int    `json:"credits"`
-	CourseID int64  `json:"course_id"`
+import "github.com/google/uuid"
+
+type DisciplineEntity struct {
+	ID       int64     `json:"id"`
+	UUID     uuid.UUID `json:"uuid"`
+	Name     string    `json:"name"`
+	Credits  int32     `json:"credits"`
+	CourseID int64     `json:"course_id"`
 }

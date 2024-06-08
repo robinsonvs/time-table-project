@@ -159,7 +159,7 @@ func (h *handler) UpdateCourse(w http.ResponseWriter, r *http.Request) {
 //	@Accept			json
 //	@Produce		json
 //	@Param			uuid	path	string	true	"course uuid"
-//	@Success		200	{object}	response.UserResponse
+//	@Success		200	{object}	response.CourseResponse
 //	@Failure		400	{object}	httperr.RestErr
 //	@Failure		404	{object}	httperr.RestErr
 //	@Failure		500	{object}	httperr.RestErr

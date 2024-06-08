@@ -33,6 +33,39 @@ func InitRoutes(router chi.Router, h handler.Handler) {
 		r.Get("/courses/{uuid}", h.GetCourseByID)
 		r.Get("/courses/list-all", h.FindManyCourses)
 
+		r.Post("/semesters", h.CreateSemester)
+		r.Patch("/semesters/{uuid}", h.UpdateSemester)
+		r.Delete("/semesters/{uuid}", h.DeleteSemester)
+		r.Get("/semesters/{uuid}", h.GetSemesterByID)
+		r.Get("/semesters/list-all", h.FindManySemesters)
+
+		r.Post("/professors", h.CreateProfessor)
+		r.Patch("/professors/{uuid}", h.UpdateProfessor)
+		r.Delete("/professors/{uuid}", h.DeleteProfessor)
+		r.Get("/professors/{uuid}", h.GetProfessorByID)
+		r.Get("/professors/list-all", h.FindManyProfessors)
+
+		r.Post("/disciplines", h.CreateDiscipline)
+		r.Patch("/disciplines/{uuid}", h.UpdateDiscipline)
+		r.Delete("/disciplines/{uuid}", h.DeleteDiscipline)
+		r.Get("/disciplines/{uuid}", h.GetDisciplineByID)
+		r.Get("/disciplines/list-all", h.FindManyDisciplines)
+		r.Get("/disciplines/list-all/{courseId}", h.FindManyDisciplinesByCourseId)
+
+		r.Post("/availabilities", h.CreateAvailability)
+		r.Patch("/availabilities/{uuid}", h.UpdateAvailability)
+		r.Delete("/availabilities/{uuid}", h.DeleteAvailability)
+		r.Get("/availabilities/{uuid}", h.GetAvailabilityByID)
+		r.Get("/availabilities/list-all", h.FindManyAvailabilities)
+		r.Get("/availabilities/list-all/{professorId}", h.FindManyAvailabilitiesByProfessorId)
+
+		r.Post("/parameterizations", h.CreateParameterization)
+		r.Patch("/parameterizations/{uuid}", h.UpdateParameterization)
+		r.Delete("/parameterizations/{uuid}", h.DeleteParameterization)
+		r.Get("/parameterizations/{uuid}", h.GetParameterizationByID)
+		r.Get("/parameterizations/list-all", h.FindManyParameterizations)
+		r.Get("/parameterizations/list-all/{semesterId}", h.FindManyParameterizationsBySemesterId)
+
 	})
 
 }

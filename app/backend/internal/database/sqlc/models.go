@@ -27,6 +27,7 @@ type Class struct {
 	Endtime      time.Time
 	DisciplineID int64
 	ProfessorID  int64
+	ProposalID   int64
 }
 
 type Course struct {
@@ -43,6 +44,12 @@ type Discipline struct {
 	Name     string
 	Credits  int32
 	CourseID int64
+}
+
+type EligibleDiscipline struct {
+	ID           int64
+	ProfessorID  int64
+	DisciplineID int64
 }
 
 type Parameterization struct {

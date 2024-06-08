@@ -1,8 +1,10 @@
 package entity
 
-type Professor struct {
-	ID              int64  `json:"id"`
-	UUID            string `json:"uuid"`
-	Name            string `json:"name"`
-	HoursToAllocate int    `json:"hours_to_allocate"`
+import "github.com/google/uuid"
+
+type ProfessorEntity struct {
+	ID              int64     `json:"id"`
+	UUID            uuid.UUID `json:"uuid"`
+	Name            string    `json:"name"`
+	HoursToAllocate int32     `json:"hoursToAllocate"`
 }

@@ -1,4 +1,23 @@
 definitions:
+  dto.CreateAvailabilityDto:
+    properties:
+      dayOfWeek:
+        maxLength: 255
+        minLength: 3
+        type: string
+      professor_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+      shift:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - dayOfWeek
+    - professor_id
+    - shift
+    type: object
   dto.CreateCourseDto:
     properties:
       location:
@@ -13,6 +32,72 @@ definitions:
     - location
     - modality
     - name
+    type: object
+  dto.CreateDisciplineDto:
+    properties:
+      course_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+      credits:
+        maximum: 100
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - course_id
+    - credits
+    - name
+    type: object
+  dto.CreateParameterizationDto:
+    properties:
+      course_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+      maxCreditsToOffer:
+        maximum: 3
+        minimum: 3
+        type: integer
+      numClassesPerDiscipline:
+        maximum: 3
+        minimum: 3
+        type: integer
+      semester_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+    required:
+    - course_id
+    - maxCreditsToOffer
+    - numClassesPerDiscipline
+    - semester_id
+    type: object
+  dto.CreateProfessorDto:
+    properties:
+      hoursToAllocate:
+        maximum: 3
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - hoursToAllocate
+    - name
+    type: object
+  dto.CreateSemesterDto:
+    properties:
+      semester:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - semester
     type: object
   dto.CreateUserDto:
     properties:
@@ -43,6 +128,25 @@ definitions:
     - email
     - password
     type: object
+  dto.UpdateAvailabilityDto:
+    properties:
+      dayOfWeek:
+        maxLength: 255
+        minLength: 3
+        type: string
+      professor_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+      shift:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - dayOfWeek
+    - professor_id
+    - shift
+    type: object
   dto.UpdateCourseDto:
     properties:
       location:
@@ -50,6 +154,70 @@ definitions:
       modality:
         type: string
       name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    type: object
+  dto.UpdateDisciplineDto:
+    properties:
+      course_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+      credits:
+        maximum: 100
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - course_id
+    - credits
+    - name
+    type: object
+  dto.UpdateParameterizationDto:
+    properties:
+      course_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+      maxCreditsToOffer:
+        maximum: 3
+        minimum: 3
+        type: integer
+      numClassesPerDiscipline:
+        maximum: 3
+        minimum: 3
+        type: integer
+      semester_id:
+        maximum: 100
+        minimum: 1
+        type: integer
+    required:
+    - course_id
+    - maxCreditsToOffer
+    - numClassesPerDiscipline
+    - semester_id
+    type: object
+  dto.UpdateProfessorDto:
+    properties:
+      hoursToAllocate:
+        maximum: 3
+        minimum: 1
+        type: integer
+      name:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - hoursToAllocate
+    - name
+    type: object
+  dto.UpdateSemesterDto:
+    properties:
+      semester:
         maxLength: 255
         minLength: 3
         type: string
@@ -98,6 +266,17 @@ definitions:
       message:
         type: string
     type: object
+  response.AvailabilityResponse:
+    properties:
+      dayOfWeek:
+        type: string
+      professor_id:
+        type: integer
+      shift:
+        type: string
+      uuid:
+        type: string
+    type: object
   response.CourseResponse:
     properties:
       location:
@@ -109,11 +288,57 @@ definitions:
       uuid:
         type: string
     type: object
+  response.DisciplineResponse:
+    properties:
+      course_id:
+        type: integer
+      credits:
+        type: integer
+      name:
+        type: string
+      uuid:
+        type: string
+    type: object
+  response.ManyAvailabilitiesResponse:
+    properties:
+      availabilities:
+        items:
+          $ref: '#/definitions/response.AvailabilityResponse'
+        type: array
+    type: object
   response.ManyCoursesResponse:
     properties:
       courses:
         items:
           $ref: '#/definitions/response.CourseResponse'
+        type: array
+    type: object
+  response.ManyDisciplinesResponse:
+    properties:
+      disciplines:
+        items:
+          $ref: '#/definitions/response.DisciplineResponse'
+        type: array
+    type: object
+  response.ManyParameterizationsResponse:
+    properties:
+      parameterizations:
+        items:
+          $ref: '#/definitions/response.ParameterizationResponse'
+        type: array
+    type: object
+  response.ManyProfessorsResponse:
+    properties:
+      professors:
+        items:
+          $ref: '#/definitions/response.ProfessorResponse'
+        type: array
+    type: object
+  response.ManySemestersResponse:
+    properties:
+      semesters:
+        items:
+          $ref: '#/definitions/response.SemesterResponse'
         type: array
     type: object
   response.ManyUsersResponse:
@@ -122,6 +347,35 @@ definitions:
         items:
           $ref: '#/definitions/response.UserResponse'
         type: array
+    type: object
+  response.ParameterizationResponse:
+    properties:
+      course_id:
+        type: integer
+      maxCreditsToOffer:
+        type: integer
+      numClassesPerDiscipline:
+        type: integer
+      semester_id:
+        type: integer
+      uuid:
+        type: string
+    type: object
+  response.ProfessorResponse:
+    properties:
+      hoursToAllocate:
+        type: integer
+      name:
+        type: string
+      uuid:
+        type: string
+    type: object
+  response.SemesterResponse:
+    properties:
+      semester:
+        type: string
+      uuid:
+        type: string
     type: object
   response.UserAuthToken:
     properties:
@@ -172,6 +426,199 @@ paths:
       summary: Auth Login
       tags:
       - auth
+  /availabilities:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create availability
+      parameters:
+      - description: Create availability dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateAvailabilityDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new availability
+      tags:
+      - availability
+  /availabilities/{uuid}:
+    get:
+      consumes:
+      - application/json
+      description: Get availability by uuid
+      parameters:
+      - description: availability uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.AvailabilityResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Availability details
+      tags:
+      - availability
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for update availability
+      parameters:
+      - description: availability uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update availability dto
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/dto.UpdateAvailabilityDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update availability
+      tags:
+      - availability
+  /availabilities/list-all:
+    get:
+      consumes:
+      - application/json
+      description: Get many availability
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyAvailabilitiesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many availability
+      tags:
+      - availability
+  /availabilities/list-all/{professorId}:
+    get:
+      consumes:
+      - application/json
+      description: Get many availabilities by professor
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyAvailabilitiesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many availabilities by professor
+      tags:
+      - availabilities by professor
+  /availability/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete availability by uuid
+      parameters:
+      - description: availability uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete availability
+      tags:
+      - availability
   /courses:
     post:
       consumes:
@@ -251,7 +698,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/response.UserResponse'
+            $ref: '#/definitions/response.CourseResponse'
         "400":
           description: Bad Request
           schema:
@@ -335,6 +782,717 @@ paths:
       summary: Get many courses
       tags:
       - course
+  /disciplines:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create discipline
+      parameters:
+      - description: Create discipline dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateDisciplineDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new discipline
+      tags:
+      - discipline
+  /disciplines/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete discipline by uuid
+      parameters:
+      - description: discipline uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete discipline
+      tags:
+      - discipline
+    get:
+      consumes:
+      - application/json
+      description: Get discipline by uuid
+      parameters:
+      - description: discipline uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.DisciplineResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Discipline details
+      tags:
+      - discipline
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for update discipline
+      parameters:
+      - description: discipline uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update discipline dto
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/dto.UpdateDisciplineDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update discipline
+      tags:
+      - discipline
+  /disciplines/list-all:
+    get:
+      consumes:
+      - application/json
+      description: Get many disciplines
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyDisciplinesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many disciplines
+      tags:
+      - discipline
+  /disciplines/list-all/{courseId}:
+    get:
+      consumes:
+      - application/json
+      description: Get many disciplines by course
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyDisciplinesResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many disciplines by course
+      tags:
+      - discipline by course
+  /parameterization/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete parameterization by uuid
+      parameters:
+      - description: parameterization uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete parameterization
+      tags:
+      - parameterization
+  /parameterizations:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create parameterization
+      parameters:
+      - description: Create parameterization dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateParameterizationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new parameterization
+      tags:
+      - parameterization
+  /parameterizations/{uuid}:
+    get:
+      consumes:
+      - application/json
+      description: Get parameterization by uuid
+      parameters:
+      - description: parameterization uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ParameterizationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Parameterization details
+      tags:
+      - parameterization
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for update parameterization
+      parameters:
+      - description: parameterization uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update parameterization dto
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/dto.UpdateParameterizationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update parameterization
+      tags:
+      - parameterization
+  /parameterizations/list-all:
+    get:
+      consumes:
+      - application/json
+      description: Get many parameterization
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyParameterizationsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many parameterization
+      tags:
+      - parameterization
+  /parameterizations/list-all/{semesterId}:
+    get:
+      consumes:
+      - application/json
+      description: Get many parameterizations by semester
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyParameterizationsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many parameterizations by semester
+      tags:
+      - parameterizations by semester
+  /professors:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create professor
+      parameters:
+      - description: Create professor dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateProfessorDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new professor
+      tags:
+      - professor
+  /professors/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete professor by uuid
+      parameters:
+      - description: professor uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete professor
+      tags:
+      - professor
+    get:
+      consumes:
+      - application/json
+      description: Get professor by uuid
+      parameters:
+      - description: professor uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ProfessorResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Professor details
+      tags:
+      - professor
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for update professor
+      parameters:
+      - description: professor uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update professor dto
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/dto.UpdateProfessorDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update professor
+      tags:
+      - professor
+  /professors/list-all:
+    get:
+      consumes:
+      - application/json
+      description: Get many professors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManyProfessorsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many professors
+      tags:
+      - professor
+  /semesters:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create semester
+      parameters:
+      - description: Create semester dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateSemesterDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new semester
+      tags:
+      - semester
+  /semesters/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete semester by uuid
+      parameters:
+      - description: semester uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete semester
+      tags:
+      - semester
+    get:
+      consumes:
+      - application/json
+      description: Get semester by uuid
+      parameters:
+      - description: semester uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.SemesterResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Semester details
+      tags:
+      - semester
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for update semester
+      parameters:
+      - description: semester uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      - description: Update semester dto
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/dto.UpdateSemesterDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update semester
+      tags:
+      - semester
+  /semesters/list-all:
+    get:
+      consumes:
+      - application/json
+      description: Get many semesters
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.ManySemestersResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Get many semesters
+      tags:
+      - semester
   /users:
     patch:
       consumes:
