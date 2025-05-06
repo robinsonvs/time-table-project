@@ -105,6 +105,7 @@ func (s *service) FindManyCourses(ctx context.Context) (*response.ManyCoursesRes
 	courses := response.ManyCoursesResponse{}
 	for _, course := range findManyCourses {
 		courseResponse := response.CourseResponse{
+			Id:       course.ID,
 			UUID:     course.UUID.String(),
 			Name:     course.Name,
 			Modality: course.Modality,

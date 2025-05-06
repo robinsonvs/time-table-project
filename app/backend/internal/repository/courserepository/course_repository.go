@@ -72,6 +72,7 @@ func (r *repository) FindManyCourses(ctx context.Context) ([]entity.CourseEntity
 	var coursesEntity []entity.CourseEntity
 	for _, course := range courses {
 		courseEntity := entity.CourseEntity{
+			ID:       course.ID,
 			UUID:     course.Uuid,
 			Name:     course.Name,
 			Modality: course.Modality,

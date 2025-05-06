@@ -90,6 +90,7 @@ func (s *service) FindManyProfessors(ctx context.Context) (*response.ManyProfess
 	professors := response.ManyProfessorsResponse{}
 	for _, professorEntity := range findManyProfessors {
 		professorResponse := response.ProfessorResponse{
+			Id:              professorEntity.ID,
 			UUID:            professorEntity.UUID.String(),
 			Name:            professorEntity.Name,
 			HoursToAllocate: professorEntity.HoursToAllocate,

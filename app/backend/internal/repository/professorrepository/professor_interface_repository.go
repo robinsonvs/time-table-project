@@ -26,4 +26,5 @@ type ProfessorRepository interface {
 	UpdateProfessor(ctx context.Context, u *entity.ProfessorEntity) error
 	DeleteProfessor(ctx context.Context, uuid uuid.UUID) error
 	FindManyProfessors(ctx context.Context) ([]entity.ProfessorEntity, error)
+	GetProfessorsWithDisciplines(ctx context.Context) ([]entity.ProfessorEntity, error)
 }

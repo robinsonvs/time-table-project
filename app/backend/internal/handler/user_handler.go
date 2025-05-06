@@ -55,11 +55,18 @@ func (h *handler) CreateUser(w http.ResponseWriter, r *http.Request) {
 
 	err = h.userService.CreateUser(r.Context(), req)
 	if err != nil {
-		slog.Error(fmt.Sprintf("error to create user: %v", err), slog.String("package", "handler_user"))
-		w.WriteHeader(http.StatusInternalServerError)
-		msg := httperr.NewBadRequestError("error to create user")
-		json.NewEncoder(w).Encode(msg)
-		return
+		//slog.Error(fmt.Sprintf("error to create user: %v", err), slog.String("package", "handler_user"))
+		//w.WriteHeader(http.StatusInternalServerError)
+		//msg := httperr.NewBadRequestError("error to create user")
+		//json.NewEncoder(w).Encode(msg)
+		//return
+
+		if err.Error() == "user already exists" {
+			w.WriteHeader(http.StatusBadRequest)
+			msg := httperr.NewBadRequestError("already exists a user with this email")
+			json.NewEncoder(w).Encode(msg)
+			return
+		}
 	}
 }
 
@@ -119,18 +126,14 @@ func (h *handler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(msg)
 			return
 		}
-		if err.Error() == "cep not found" {
-			w.WriteHeader(http.StatusNotFound)
-			msg := httperr.NewNotFoundError("cep not found")
-			json.NewEncoder(w).Encode(msg)
-			return
-		}
+
 		if err.Error() == "user already exists" {
 			w.WriteHeader(http.StatusBadRequest)
-			msg := httperr.NewBadRequestError("user already exists with this email")
+			msg := httperr.NewBadRequestError("already exists a user with this email")
 			json.NewEncoder(w).Encode(msg)
 			return
 		}
+
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err)
 		return
@@ -271,31 +274,40 @@ func (h *handler) FindManyUsers(w http.ResponseWriter, r *http.Request) {
 //	@Security		ApiKeyAuth
 //	@Accept			json
 //	@Produce		json
-//	@Param			uuid		path	string						true	"user uuid"
 //	@Param			body	body	dto.UpdateUserPasswordDto	true	"Update user password dto"	true
 //	@Success		200
 //	@Failure		400	{object}	httperr.RestErr
 //	@Failure		500	{object}	httperr.RestErr
-//	@Router			/users/{uuid}/password [patch]
+//	@Router			/users/password [patch]
 func (h *handler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
 	var req dto.UpdateUserPasswordDto
 
-	id := chi.URLParam(r, "uuid")
-	if id == "" {
-		slog.Error("id is empty", slog.String("package", "userhandler"))
-		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("id is required")
-		json.NewEncoder(w).Encode(msg)
-		return
-	}
-	uuid, err := uuid.Parse(id)
+	//id := chi.URLParam(r, "uuid")
+	//if id == "" {
+	//	slog.Error("id is empty", slog.String("package", "userhandler"))
+	//	w.WriteHeader(http.StatusBadRequest)
+	//	msg := httperr.NewBadRequestError("id is required")
+	//	json.NewEncoder(w).Encode(msg)
+	//	return
+	//}
+	//uuid, err := uuid.Parse(id)
+	//if err != nil {
+	//	slog.Error(fmt.Sprintf("error to parse id: %v", err), slog.String("package", "handler_user"))
+	//	w.WriteHeader(http.StatusBadRequest)
+	//	msg := httperr.NewBadRequestError("error to parse id")
+	//	json.NewEncoder(w).Encode(msg)
+	//	return
+	//}
+
+	user, err := utils.DecodeJwt(r)
 	if err != nil {
-		slog.Error(fmt.Sprintf("error to parse id: %v", err), slog.String("package", "handler_user"))
+		slog.Error("error to decode jwt", slog.String("package", "userhandler"))
 		w.WriteHeader(http.StatusBadRequest)
-		msg := httperr.NewBadRequestError("error to parse id")
+		msg := httperr.NewBadRequestError("error to decode jwt")
 		json.NewEncoder(w).Encode(msg)
 		return
 	}
+
 	if r.Body == http.NoBody {
 		slog.Error("body is empty", slog.String("package", "userhandler"))
 		w.WriteHeader(http.StatusBadRequest)
@@ -318,7 +330,7 @@ func (h *handler) UpdateUserPassword(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(httpErr)
 		return
 	}
-	err = h.userService.UpdateUserPassword(r.Context(), &req, uuid)
+	err = h.userService.UpdateUserPassword(r.Context(), &req, user.UUID)
 	if err != nil {
 		slog.Error(fmt.Sprintf("error to update user password: %v", err), slog.String("package", "handler_user"))
 		if err.Error() == "user not found" {

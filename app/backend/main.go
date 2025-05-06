@@ -6,6 +6,7 @@ import (
 	"github.com/robinsonvs/time-table-project/config/env"
 	"github.com/robinsonvs/time-table-project/config/logger"
 	_ "github.com/robinsonvs/time-table-project/docs"
+	"github.com/robinsonvs/time-table-project/internal/core/service"
 	"github.com/robinsonvs/time-table-project/internal/database"
 	"github.com/robinsonvs/time-table-project/internal/database/sqlc"
 	"github.com/robinsonvs/time-table-project/internal/handler"
@@ -13,6 +14,7 @@ import (
 	"github.com/robinsonvs/time-table-project/internal/repository/availabilityrepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/courserepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/disciplinerepository"
+	"github.com/robinsonvs/time-table-project/internal/repository/eligibledisciplinerepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/parameterizationrepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/professorrepository"
 	"github.com/robinsonvs/time-table-project/internal/repository/semesterrepository"
@@ -20,6 +22,7 @@ import (
 	"github.com/robinsonvs/time-table-project/internal/service/availabilityservice"
 	"github.com/robinsonvs/time-table-project/internal/service/courseservice"
 	"github.com/robinsonvs/time-table-project/internal/service/disciplineservice"
+	"github.com/robinsonvs/time-table-project/internal/service/eligibledisciplineservice"
 	"github.com/robinsonvs/time-table-project/internal/service/parameterizationservice"
 	"github.com/robinsonvs/time-table-project/internal/service/professorservice"
 	"github.com/robinsonvs/time-table-project/internal/service/semesterservice"
@@ -65,6 +68,7 @@ func main() {
 	professorRepo := professorrepository.NewProfessorRepository(dbConnection, queries)
 	disciplineRepo := disciplinerepository.NewDisciplineRepository(dbConnection, queries)
 	availabilityRepo := availabilityrepository.NewAvailabilityRepository(dbConnection, queries)
+	eligibleDisciplineRepo := eligibledisciplinerepository.NewEligibleDisciplineRepository(dbConnection, queries)
 	parameterizationRepo := parameterizationrepository.NewParameterizationRepository(dbConnection, queries)
 
 	newUserService := userservice.NewUserService(userRepo)
@@ -74,10 +78,13 @@ func main() {
 	newDisciplineService := disciplineservice.NewDisciplineService(disciplineRepo)
 	newAvailabilityService := availabilityservice.NewAvailabilityService(availabilityRepo)
 	newParameterizationService := parameterizationservice.NewParameterizationService(parameterizationRepo)
+	newEligibleDisciplineService := eligibledisciplineservice.NewEligibleDisciplineService(eligibleDisciplineRepo)
+
+	newGeneticAlgorithmService := service.NewGeneticAlgorithmService(disciplineRepo, professorRepo, availabilityRepo, parameterizationRepo)
 
 	newHandler := handler.NewHandler(newUserService,
 		newCourseService, newSemesterService, newProfessorService,
-		newDisciplineService, newAvailabilityService, newParameterizationService)
+		newDisciplineService, newAvailabilityService, newParameterizationService, newEligibleDisciplineService, newGeneticAlgorithmService)
 
 	//enableCors(router)
 

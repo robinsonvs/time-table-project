@@ -31,3 +31,26 @@ WHERE p.semester_id = $1
 ORDER BY p.course_id ASC;
 
 
+
+
+-- name: GetDisciplinesByCourseID :many
+SELECT id, uuid, name, credits, course_id FROM discipline WHERE course_id = $1;
+
+-- name: GetProfessorsByCourseID :many
+SELECT p.id, p.uuid, p.name, p.hoursToAllocate
+FROM professor p
+         JOIN eligible_disciplines ed ON p.id = ed.professor_id
+         JOIN discipline d ON ed.discipline_id = d.id
+WHERE d.course_id = $1;
+
+-- name: CreateProposal :exec
+INSERT INTO proposal (uuid, semester_id, course_id)
+VALUES ($1, $2, $3);
+
+-- name: CreateClass :exec
+INSERT INTO class (uuid, dayOfWeek, shift, startTime, endTime, discipline_id, professor_id, proposal_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, uuid;
+
+-- name: GetProposalID :one
+SELECT p.id from proposal p where p.uuid = $1;
+

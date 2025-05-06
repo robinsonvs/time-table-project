@@ -27,4 +27,7 @@ type ParameterizationRepository interface {
 	DeleteParameterization(ctx context.Context, uuid uuid.UUID) error
 	FindManyParameterizations(ctx context.Context) ([]entity.ParameterizationEntity, error)
 	FindManyParameterizationsBySemesterId(ctx context.Context, semesterId int64) ([]entity.ParameterizationEntity, error)
+	GetDisciplinesByCourseID(ctx context.Context, courseId int64) ([]entity.DisciplineEntity, error)
+	GetProfessorsByCourseID(ctx context.Context, courseId int64) ([]entity.ProfessorEntity, error)
+	CreateProposal(ctx context.Context, u *entity.ProposalEntity) error
 }

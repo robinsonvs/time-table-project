@@ -71,6 +71,7 @@ func (r *repository) FindManyAvailabilities(ctx context.Context) ([]entity.Avail
 	var availabilitiesEntity []entity.AvailabilityEntity
 	for _, availability := range availabilities {
 		availabilityEntity := entity.AvailabilityEntity{
+			ID:          availability.ID,
 			UUID:        availability.Uuid,
 			DayOfWeek:   availability.Dayofweek,
 			Shift:       availability.Shift,
@@ -91,6 +92,7 @@ func (r *repository) FindManyAvailabilitiesByProfessorId(ctx context.Context, pr
 	var availabilitiesEntity []entity.AvailabilityEntity
 	for _, availability := range availabilities {
 		availabilityEntity := entity.AvailabilityEntity{
+			ID:          availability.ID,
 			UUID:        availability.Uuid,
 			DayOfWeek:   availability.Dayofweek,
 			Shift:       availability.Shift,

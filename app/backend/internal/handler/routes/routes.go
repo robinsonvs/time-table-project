@@ -25,7 +25,7 @@ func InitRoutes(router chi.Router, h handler.Handler) {
 		r.Get("/users/{uuid}", h.GetUserByID)
 		r.Delete("/users/{uuid}", h.DeleteUser)
 		r.Get("/users/list-all", h.FindManyUsers)
-		r.Patch("/users/{uuid}/password", h.UpdateUserPassword)
+		r.Patch("/users/password", h.UpdateUserPassword)
 
 		r.Post("/courses", h.CreateCourse)
 		r.Patch("/courses/{uuid}", h.UpdateCourse)
@@ -65,6 +65,11 @@ func InitRoutes(router chi.Router, h handler.Handler) {
 		r.Get("/parameterizations/{uuid}", h.GetParameterizationByID)
 		r.Get("/parameterizations/list-all", h.FindManyParameterizations)
 		r.Get("/parameterizations/list-all/{semesterId}", h.FindManyParameterizationsBySemesterId)
+
+		r.Post("/eligible-disciplines", h.CreateEligibleDiscipline)
+		r.Delete("/eligible-disciplines", h.DeleteEligibleDiscipline)
+
+		r.Post("/generate-proposal/{parameterizationID}", h.GenerateProposal)
 
 	})
 

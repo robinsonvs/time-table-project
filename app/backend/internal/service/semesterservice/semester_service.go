@@ -87,6 +87,7 @@ func (s *service) FindManySemesters(ctx context.Context) (*response.ManySemester
 	semesters := response.ManySemestersResponse{}
 	for _, semesterEntity := range findManySemesters {
 		semesterResponse := response.SemesterResponse{
+			Id:       semesterEntity.ID,
 			UUID:     semesterEntity.UUID.String(),
 			Semester: semesterEntity.Semester,
 		}

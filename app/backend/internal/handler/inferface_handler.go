@@ -1,9 +1,11 @@
 package handler
 
 import (
+	"github.com/robinsonvs/time-table-project/internal/core/service"
 	"github.com/robinsonvs/time-table-project/internal/service/availabilityservice"
 	"github.com/robinsonvs/time-table-project/internal/service/courseservice"
 	"github.com/robinsonvs/time-table-project/internal/service/disciplineservice"
+	"github.com/robinsonvs/time-table-project/internal/service/eligibledisciplineservice"
 	"github.com/robinsonvs/time-table-project/internal/service/parameterizationservice"
 	"github.com/robinsonvs/time-table-project/internal/service/professorservice"
 	"github.com/robinsonvs/time-table-project/internal/service/semesterservice"
@@ -17,26 +19,32 @@ func NewHandler(userService userservice.UserService,
 	professorService professorservice.ProfessorService,
 	disciplineService disciplineservice.DisciplineService,
 	availabilityService availabilityservice.AvailabilityService,
-	parameterizationService parameterizationservice.ParameterizationService) Handler {
+	parameterizationService parameterizationservice.ParameterizationService,
+	eligibleDisciplineService eligibledisciplineservice.EligibleDisciplineService,
+	geneticAlgorithmService service.GeneticAlgorithmServiceInterface) Handler {
 	return &handler{
-		userService:             userService,
-		courseService:           courseService,
-		semesterService:         semesterService,
-		professorService:        professorService,
-		disciplineService:       disciplineService,
-		availabilityService:     availabilityService,
-		parameterizationService: parameterizationService,
+		userService:               userService,
+		courseService:             courseService,
+		semesterService:           semesterService,
+		professorService:          professorService,
+		disciplineService:         disciplineService,
+		availabilityService:       availabilityService,
+		parameterizationService:   parameterizationService,
+		eligibleDisciplineService: eligibleDisciplineService,
+		geneticAlgorithmService:   geneticAlgorithmService,
 	}
 }
 
 type handler struct {
-	userService             userservice.UserService
-	courseService           courseservice.CourseService
-	semesterService         semesterservice.SemesterService
-	professorService        professorservice.ProfessorService
-	disciplineService       disciplineservice.DisciplineService
-	availabilityService     availabilityservice.AvailabilityService
-	parameterizationService parameterizationservice.ParameterizationService
+	userService               userservice.UserService
+	courseService             courseservice.CourseService
+	semesterService           semesterservice.SemesterService
+	professorService          professorservice.ProfessorService
+	disciplineService         disciplineservice.DisciplineService
+	availabilityService       availabilityservice.AvailabilityService
+	parameterizationService   parameterizationservice.ParameterizationService
+	eligibleDisciplineService eligibledisciplineservice.EligibleDisciplineService
+	geneticAlgorithmService   service.GeneticAlgorithmServiceInterface
 }
 
 type Handler interface {
@@ -87,4 +95,9 @@ type Handler interface {
 	GetParameterizationByID(w http.ResponseWriter, r *http.Request)
 	FindManyParameterizations(w http.ResponseWriter, r *http.Request)
 	FindManyParameterizationsBySemesterId(w http.ResponseWriter, r *http.Request)
+
+	CreateEligibleDiscipline(w http.ResponseWriter, r *http.Request)
+	DeleteEligibleDiscipline(w http.ResponseWriter, r *http.Request)
+
+	GenerateProposal(w http.ResponseWriter, r *http.Request)
 }

@@ -1,6 +1,7 @@
 package response
 
 type DisciplineResponse struct {
+	Id       int64  `json:"id"`
 	UUID     string `json:"uuid"`
 	Name     string `json:"name"`
 	Credits  int32  `json:"credits"`

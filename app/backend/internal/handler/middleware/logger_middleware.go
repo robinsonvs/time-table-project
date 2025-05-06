@@ -22,10 +22,9 @@ func LoggerData(next http.Handler) http.Handler {
 				slog.Error("error unmarshalling request data", err, slog.String("func", "LoggerData"))
 			}
 			if hasSensitiveData(requestData) {
-				for key := range requestData {
+				for key, value := range requestData {
 					for _, keyword := range sensitiveKeywords {
-
-						if strings.Contains(strings.ToLower(key), keyword) || strings.Contains(strings.ToLower(requestData[key].(string)), keyword) {
+						if containsSensitiveKeyword(key, keyword) || containsSensitiveKeyword(value, keyword) {
 							requestData[key] = "[REDACTED]"
 						}
 					}
@@ -42,7 +41,6 @@ func LoggerData(next http.Handler) http.Handler {
 		if err != nil {
 			userID = "no token"
 			userEmail = "no token"
-
 		} else {
 			userID = user.ID
 			userEmail = user.Email
@@ -63,12 +61,20 @@ func LoggerData(next http.Handler) http.Handler {
 var sensitiveKeywords = []string{"password"}
 
 func hasSensitiveData(body map[string]interface{}) bool {
-	for key := range body {
+	for key, value := range body {
 		for _, keyword := range sensitiveKeywords {
-			if strings.Contains(strings.ToLower(key), keyword) || strings.Contains(strings.ToLower(body[key].(string)), keyword) {
+			if containsSensitiveKeyword(key, keyword) || containsSensitiveKeyword(value, keyword) {
 				return true
 			}
 		}
 	}
 	return false
+}
+
+func containsSensitiveKeyword(data interface{}, keyword string) bool {
+	str, ok := data.(string)
+	if !ok {
+		return false
+	}
+	return strings.Contains(strings.ToLower(str), keyword)
 }

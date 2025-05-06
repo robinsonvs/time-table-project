@@ -22,7 +22,8 @@ CREATE TABLE if not exists course (
 CREATE TABLE if not exists semester (
     id BIGINT PRIMARY KEY DEFAULT nextval('semester_id_seq'),
     uuid UUID NOT NULL DEFAULT gen_random_uuid(),
-    semester VARCHAR(50) NOT NULL
+    semester VARCHAR(50) NOT NULL,
+    CONSTRAINT semester_unique UNIQUE (semester)
     );
 
 CREATE TABLE if not exists professor (
@@ -35,6 +36,7 @@ CREATE TABLE if not exists professor (
 CREATE TABLE if not exists discipline (
     id BIGINT PRIMARY KEY DEFAULT nextval('discipline_id_seq'),
     uuid UUID NOT NULL DEFAULT gen_random_uuid(),
+    ----code VARCHAR(20) NOT NULL,
     name VARCHAR(255) NOT NULL,
     credits INT NOT NULL,
     course_id BIGINT not null,
@@ -115,3 +117,17 @@ CREATE INDEX idx_proposal_semester_id ON proposal(semester_id);
 CREATE INDEX idx_proposal_course_id ON proposal(course_id);
 CREATE INDEX idx_class_discipline_id ON class(discipline_id);
 CREATE INDEX idx_class_professor_id ON class(professor_id);
+
+
+alter table public.professor
+    add constraint professor_pk
+        unique (name);
+
+alter table public.discipline
+    add constraint discipline_pk
+        unique (name);
+
+alter table public.availability
+    add constraint availability_pk
+        unique (dayofweek, professor_id, shift);
+

@@ -6,8 +6,6 @@ definitions:
         minLength: 3
         type: string
       professor_id:
-        maximum: 100
-        minimum: 1
         type: integer
       shift:
         maxLength: 255
@@ -36,12 +34,8 @@ definitions:
   dto.CreateDisciplineDto:
     properties:
       course_id:
-        maximum: 100
-        minimum: 1
         type: integer
       credits:
-        maximum: 100
-        minimum: 1
         type: integer
       name:
         maxLength: 255
@@ -52,23 +46,25 @@ definitions:
     - credits
     - name
     type: object
+  dto.CreateEligibleDisciplineDto:
+    properties:
+      discipline_id:
+        type: integer
+      professor_id:
+        type: integer
+    required:
+    - discipline_id
+    - professor_id
+    type: object
   dto.CreateParameterizationDto:
     properties:
       course_id:
-        maximum: 100
-        minimum: 1
         type: integer
       maxCreditsToOffer:
-        maximum: 3
-        minimum: 3
         type: integer
       numClassesPerDiscipline:
-        maximum: 3
-        minimum: 3
         type: integer
       semester_id:
-        maximum: 100
-        minimum: 1
         type: integer
     required:
     - course_id
@@ -79,8 +75,6 @@ definitions:
   dto.CreateProfessorDto:
     properties:
       hoursToAllocate:
-        maximum: 3
-        minimum: 1
         type: integer
       name:
         maxLength: 255
@@ -104,7 +98,7 @@ definitions:
       email:
         type: string
       name:
-        maxLength: 30
+        maxLength: 255
         minLength: 3
         type: string
       password:
@@ -115,6 +109,16 @@ definitions:
     - email
     - name
     - password
+    type: object
+  dto.DeleteEligibleDisciplineDto:
+    properties:
+      discipline_id:
+        type: integer
+      professor_id:
+        type: integer
+    required:
+    - discipline_id
+    - professor_id
     type: object
   dto.LoginDTO:
     properties:
@@ -134,17 +138,12 @@ definitions:
         maxLength: 255
         minLength: 3
         type: string
-      professor_id:
-        maximum: 100
-        minimum: 1
-        type: integer
       shift:
         maxLength: 255
         minLength: 3
         type: string
     required:
     - dayOfWeek
-    - professor_id
     - shift
     type: object
   dto.UpdateCourseDto:
@@ -160,52 +159,29 @@ definitions:
     type: object
   dto.UpdateDisciplineDto:
     properties:
-      course_id:
-        maximum: 100
-        minimum: 1
-        type: integer
       credits:
-        maximum: 100
-        minimum: 1
         type: integer
       name:
         maxLength: 255
         minLength: 3
         type: string
     required:
-    - course_id
     - credits
     - name
     type: object
   dto.UpdateParameterizationDto:
     properties:
-      course_id:
-        maximum: 100
-        minimum: 1
-        type: integer
       maxCreditsToOffer:
-        maximum: 3
-        minimum: 3
         type: integer
       numClassesPerDiscipline:
-        maximum: 3
-        minimum: 3
-        type: integer
-      semester_id:
-        maximum: 100
-        minimum: 1
         type: integer
     required:
-    - course_id
     - maxCreditsToOffer
     - numClassesPerDiscipline
-    - semester_id
     type: object
   dto.UpdateProfessorDto:
     properties:
       hoursToAllocate:
-        maximum: 3
-        minimum: 1
         type: integer
       name:
         maxLength: 255
@@ -227,7 +203,7 @@ definitions:
       email:
         type: string
       name:
-        maxLength: 30
+        maxLength: 255
         minLength: 3
         type: string
     type: object
@@ -268,6 +244,8 @@ definitions:
     type: object
   response.AvailabilityResponse:
     properties:
+      '''id''':
+        type: integer
       dayOfWeek:
         type: string
       professor_id:
@@ -279,6 +257,8 @@ definitions:
     type: object
   response.CourseResponse:
     properties:
+      id:
+        type: integer
       location:
         type: string
       modality:
@@ -293,6 +273,8 @@ definitions:
       course_id:
         type: integer
       credits:
+        type: integer
+      id:
         type: integer
       name:
         type: string
@@ -352,6 +334,8 @@ definitions:
     properties:
       course_id:
         type: integer
+      id:
+        type: integer
       maxCreditsToOffer:
         type: integer
       numClassesPerDiscipline:
@@ -365,6 +349,8 @@ definitions:
     properties:
       hoursToAllocate:
         type: integer
+      id:
+        type: integer
       name:
         type: string
       uuid:
@@ -372,6 +358,8 @@ definitions:
     type: object
   response.SemesterResponse:
     properties:
+      id:
+        type: integer
       semester:
         type: string
       uuid:
@@ -457,6 +445,38 @@ paths:
       tags:
       - availability
   /availabilities/{uuid}:
+    delete:
+      consumes:
+      - application/json
+      description: delete availability by uuid
+      parameters:
+      - description: availability uuid
+        in: path
+        name: uuid
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete availability
+      tags:
+      - availability
     get:
       consumes:
       - application/json
@@ -562,6 +582,12 @@ paths:
       consumes:
       - application/json
       description: Get many availabilities by professor
+      parameters:
+      - description: availability professorId
+        in: path
+        name: professorId
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -586,39 +612,6 @@ paths:
       summary: Get many availabilities by professor
       tags:
       - availabilities by professor
-  /availability/{uuid}:
-    delete:
-      consumes:
-      - application/json
-      description: delete availability by uuid
-      parameters:
-      - description: availability uuid
-        in: path
-        name: uuid
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-      security:
-      - ApiKeyAuth: []
-      summary: Delete availability
-      tags:
-      - availability
   /courses:
     post:
       consumes:
@@ -950,6 +943,12 @@ paths:
       consumes:
       - application/json
       description: Get many disciplines by course
+      parameters:
+      - description: discipline courseId
+        in: path
+        name: courseId
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -974,7 +973,129 @@ paths:
       summary: Get many disciplines by course
       tags:
       - discipline by course
-  /parameterization/{uuid}:
+  /eligible-disciplines:
+    delete:
+      consumes:
+      - application/json
+      description: delete eligible discipline by uuid
+      parameters:
+      - description: Delete eligible discipline dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DeleteEligibleDisciplineDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Delete eligible discipline
+      tags:
+      - eligible discipline
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create eligible discipline
+      parameters:
+      - description: Create eligible discipline dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateEligibleDisciplineDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new eligible discipline
+      tags:
+      - eligible discipline
+  /generate-proposal/{parameterizationID}:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for generate proposal
+      parameters:
+      - description: parameterization uuid
+        in: path
+        name: parameterizationID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Generate new proposal
+      tags:
+      - proposal
+  /parameterizations:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint for create parameterization
+      parameters:
+      - description: Create parameterization dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateParameterizationDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Create new parameterization
+      tags:
+      - parameterization
+  /parameterizations/{uuid}:
     delete:
       consumes:
       - application/json
@@ -1007,37 +1128,6 @@ paths:
       summary: Delete parameterization
       tags:
       - parameterization
-  /parameterizations:
-    post:
-      consumes:
-      - application/json
-      description: Endpoint for create parameterization
-      parameters:
-      - description: Create parameterization dto
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/dto.CreateParameterizationDto'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-      security:
-      - ApiKeyAuth: []
-      summary: Create new parameterization
-      tags:
-      - parameterization
-  /parameterizations/{uuid}:
     get:
       consumes:
       - application/json
@@ -1143,6 +1233,12 @@ paths:
       consumes:
       - application/json
       description: Get many parameterizations by semester
+      parameters:
+      - description: parameterization semesterId
+        in: path
+        name: semesterId
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -1620,41 +1716,6 @@ paths:
       summary: User details
       tags:
       - user
-  /users/{uuid}/password:
-    patch:
-      consumes:
-      - application/json
-      description: Endpoint for Update user password
-      parameters:
-      - description: user uuid
-        in: path
-        name: uuid
-        required: true
-        type: string
-      - description: Update user password dto
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/dto.UpdateUserPasswordDto'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httperr.RestErr'
-      security:
-      - ApiKeyAuth: []
-      summary: Update user password
-      tags:
-      - user
   /users/list-all:
     get:
       consumes:
@@ -1682,6 +1743,36 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get many users
+      tags:
+      - user
+  /users/password:
+    patch:
+      consumes:
+      - application/json
+      description: Endpoint for Update user password
+      parameters:
+      - description: Update user password dto
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateUserPasswordDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httperr.RestErr'
+      security:
+      - ApiKeyAuth: []
+      summary: Update user password
       tags:
       - user
 securityDefinitions:

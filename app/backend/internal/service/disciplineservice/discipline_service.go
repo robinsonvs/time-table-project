@@ -46,10 +46,9 @@ func (s *service) UpdateDiscipline(ctx context.Context, u dto.UpdateDisciplineDt
 	}
 
 	updateDiscipline := entity.DisciplineEntity{
-		UUID:     uuid,
-		Name:     u.Name,
-		Credits:  u.Credits,
-		CourseID: u.CourseId,
+		UUID:    uuid,
+		Name:    u.Name,
+		Credits: u.Credits,
 	}
 
 	err = s.repo.UpdateDiscipline(ctx, &updateDiscipline)
@@ -93,6 +92,7 @@ func (s *service) FindManyDisciplines(ctx context.Context) (*response.ManyDiscip
 	disciplines := response.ManyDisciplinesResponse{}
 	for _, disciplineEntity := range findManyDisciplines {
 		disciplineResponse := response.DisciplineResponse{
+			Id:       disciplineEntity.ID,
 			UUID:     disciplineEntity.UUID.String(),
 			Name:     disciplineEntity.Name,
 			Credits:  disciplineEntity.Credits,
@@ -114,6 +114,7 @@ func (s *service) FindManyDisciplinesByCourseId(ctx context.Context, courseId in
 	disciplinesByCourse := response.ManyDisciplinesResponse{}
 	for _, disciplineEntity := range findManyDisciplinesByCourse {
 		disciplineResponse := response.DisciplineResponse{
+			Id:       disciplineEntity.ID,
 			UUID:     disciplineEntity.UUID.String(),
 			Name:     disciplineEntity.Name,
 			Credits:  disciplineEntity.Credits,

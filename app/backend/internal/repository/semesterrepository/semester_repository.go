@@ -66,6 +66,7 @@ func (r *repository) FindManySemesters(ctx context.Context) ([]entity.SemesterEn
 	var semestersEntity []entity.SemesterEntity
 	for _, semester := range semesters {
 		semesterEntity := entity.SemesterEntity{
+			ID:       semester.ID,
 			UUID:     semester.Uuid,
 			Semester: semester.Semester,
 		}

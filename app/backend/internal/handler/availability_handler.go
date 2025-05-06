@@ -204,7 +204,7 @@ func (h *handler) GetAvailabilityByID(w http.ResponseWriter, r *http.Request) {
 //	@Failure		400	{object}	httperr.RestErr
 //	@Failure		404	{object}	httperr.RestErr
 //	@Failure		500	{object}	httperr.RestErr
-//	@Router			/availability/{uuid} [delete]
+//	@Router			/availabilities/{uuid} [delete]
 func (h *handler) DeleteAvailability(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "uuid")
 	if id == "" {
@@ -274,6 +274,7 @@ func (h *handler) FindManyAvailabilities(w http.ResponseWriter, r *http.Request)
 //	@Security		ApiKeyAuth
 //	@Accept			json
 //	@Produce		json
+//	@Param			professorId	path	string	true	"availability professorId"
 //	@Success		200	{object}	response.ManyAvailabilitiesResponse
 //	@Failure		400	{object}	httperr.RestErr
 //	@Failure		404	{object}	httperr.RestErr

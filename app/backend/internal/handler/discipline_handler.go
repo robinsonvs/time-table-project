@@ -274,6 +274,7 @@ func (h *handler) FindManyDisciplines(w http.ResponseWriter, r *http.Request) {
 //	@Security		ApiKeyAuth
 //	@Accept			json
 //	@Produce		json
+//	@Param			courseId	path	string	true	"discipline courseId"
 //	@Success		200	{object}	response.ManyDisciplinesResponse
 //	@Failure		400	{object}	httperr.RestErr
 //	@Failure		404	{object}	httperr.RestErr

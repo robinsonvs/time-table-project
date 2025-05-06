@@ -50,8 +50,6 @@ func (s *service) UpdateParameterization(ctx context.Context, u dto.UpdateParame
 		UUID:                    uuid,
 		MaxCreditsToOffer:       u.MaxCreditsToOffer,
 		NumClassesPerDiscipline: u.NumClassesPerDiscipline,
-		SemesterID:              u.SemesterId,
-		CourseID:                u.CourseId,
 	}
 
 	err = s.repo.UpdateParameterization(ctx, &updateParameterization)
@@ -96,6 +94,7 @@ func (s *service) FindManyParameterizations(ctx context.Context) (*response.Many
 	parameterizations := response.ManyParameterizationsResponse{}
 	for _, parameterizationEntity := range findManyParameterizations {
 		parameterizationResponse := response.ParameterizationResponse{
+			Id:                      parameterizationEntity.ID,
 			UUID:                    parameterizationEntity.UUID.String(),
 			MaxCreditsToOffer:       parameterizationEntity.MaxCreditsToOffer,
 			NumClassesPerDiscipline: parameterizationEntity.NumClassesPerDiscipline,
@@ -118,6 +117,7 @@ func (s *service) FindManyParameterizationsBySemesterId(ctx context.Context, cou
 	parameterizationsBySemester := response.ManyParameterizationsResponse{}
 	for _, parameterizationEntity := range findManyParameterizationsBySemester {
 		parameterizationResponse := response.ParameterizationResponse{
+			Id:                      parameterizationEntity.ID,
 			UUID:                    parameterizationEntity.UUID.String(),
 			MaxCreditsToOffer:       parameterizationEntity.MaxCreditsToOffer,
 			NumClassesPerDiscipline: parameterizationEntity.NumClassesPerDiscipline,

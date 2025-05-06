@@ -71,6 +71,7 @@ func (r *repository) FindManyDisciplines(ctx context.Context) ([]entity.Discipli
 	var disciplinesEntity []entity.DisciplineEntity
 	for _, discipline := range disciplines {
 		disciplineEntity := entity.DisciplineEntity{
+			ID:       discipline.ID,
 			UUID:     discipline.Uuid,
 			Name:     discipline.Name,
 			Credits:  discipline.Credits,
@@ -91,6 +92,7 @@ func (r *repository) FindManyDisciplinesByCoarseId(ctx context.Context, courseId
 	var disciplinesEntity []entity.DisciplineEntity
 	for _, discipline := range disciplines {
 		disciplineEntity := entity.DisciplineEntity{
+			ID:       discipline.ID,
 			UUID:     discipline.Uuid,
 			Name:     discipline.Name,
 			Credits:  discipline.Credits,

@@ -15,6 +15,9 @@ func (s *service) Login(ctx context.Context, u dto.LoginDTO) (*response.UserAuth
 	user, err := s.repo.FindUserByEmail(ctx, u.Email)
 	if err != nil {
 		slog.Error("error to search user by email", "err", err, slog.String("package", "userservice"))
+		if err.Error() == "sql: no rows in result set" {
+			return nil, errors.New("user or email not found")
+		}
 		return nil, errors.New("error to search user password")
 	}
 

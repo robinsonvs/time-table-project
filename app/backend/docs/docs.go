@@ -170,6 +170,15 @@ const docTemplate = `{
                     "availabilities by professor"
                 ],
                 "summary": "Get many availabilities by professor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "availability professorId",
+                        "name": "professorId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -252,6 +261,56 @@ const docTemplate = `{
                     }
                 }
             },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "delete availability by uuid",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "availability"
+                ],
+                "summary": "Delete availability",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "availability uuid",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "security": [
                     {
@@ -284,58 +343,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/dto.UpdateAvailabilityDto"
                         }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httperr.RestErr"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/httperr.RestErr"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httperr.RestErr"
-                        }
-                    }
-                }
-            }
-        },
-        "/availability/{uuid}": {
-            "delete": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "delete availability by uuid",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "availability"
-                ],
-                "summary": "Delete availability",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "availability uuid",
-                        "name": "uuid",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -732,6 +739,15 @@ const docTemplate = `{
                     "discipline by course"
                 ],
                 "summary": "Get many disciplines by course",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "discipline courseId",
+                        "name": "courseId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -923,14 +939,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/parameterization/{uuid}": {
-            "delete": {
+        "/eligible-disciplines": {
+            "post": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "delete parameterization by uuid",
+                "description": "Endpoint for create eligible discipline",
                 "consumes": [
                     "application/json"
                 ],
@@ -938,16 +954,64 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "parameterization"
+                    "eligible discipline"
                 ],
-                "summary": "Delete parameterization",
+                "summary": "Create new eligible discipline",
                 "parameters": [
                     {
-                        "type": "string",
-                        "description": "parameterization uuid",
-                        "name": "uuid",
-                        "in": "path",
-                        "required": true
+                        "description": "Create eligible discipline dto",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateEligibleDisciplineDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "delete eligible discipline by uuid",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "eligible discipline"
+                ],
+                "summary": "Delete eligible discipline",
+                "parameters": [
+                    {
+                        "description": "Delete eligible discipline dto",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.DeleteEligibleDisciplineDto"
+                        }
                     }
                 ],
                 "responses": {
@@ -962,6 +1026,52 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    }
+                }
+            }
+        },
+        "/generate-proposal/{parameterizationID}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Endpoint for generate proposal",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "proposal"
+                ],
+                "summary": "Generate new proposal",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "parameterization uuid",
+                        "name": "parameterizationID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/httperr.RestErr"
                         }
@@ -1087,6 +1197,15 @@ const docTemplate = `{
                     "parameterizations by semester"
                 ],
                 "summary": "Get many parameterizations by semester",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "parameterization semesterId",
+                        "name": "semesterId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1148,6 +1267,56 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/response.ParameterizationResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "delete parameterization by uuid",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "parameterization"
+                ],
+                "summary": "Delete parameterization",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "parameterization uuid",
+                        "name": "uuid",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     },
                     "400": {
                         "description": "Bad Request",
@@ -1882,6 +2051,54 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/password": {
+            "patch": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Endpoint for Update user password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Update user password",
+                "parameters": [
+                    {
+                        "description": "Update user password dto",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.UpdateUserPasswordDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httperr.RestErr"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{uuid}": {
             "get": {
                 "security": [
@@ -1986,61 +2203,6 @@ const docTemplate = `{
                     }
                 }
             }
-        },
-        "/users/{uuid}/password": {
-            "patch": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Endpoint for Update user password",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Update user password",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "user uuid",
-                        "name": "uuid",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Update user password dto",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/dto.UpdateUserPasswordDto"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httperr.RestErr"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httperr.RestErr"
-                        }
-                    }
-                }
-            }
         }
     },
     "definitions": {
@@ -2058,9 +2220,7 @@ const docTemplate = `{
                     "minLength": 3
                 },
                 "professor_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "shift": {
                     "type": "string",
@@ -2099,19 +2259,30 @@ const docTemplate = `{
             ],
             "properties": {
                 "course_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "credits": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 3
+                }
+            }
+        },
+        "dto.CreateEligibleDisciplineDto": {
+            "type": "object",
+            "required": [
+                "discipline_id",
+                "professor_id"
+            ],
+            "properties": {
+                "discipline_id": {
+                    "type": "integer"
+                },
+                "professor_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -2125,24 +2296,16 @@ const docTemplate = `{
             ],
             "properties": {
                 "course_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "maxCreditsToOffer": {
-                    "type": "integer",
-                    "maximum": 3,
-                    "minimum": 3
+                    "type": "integer"
                 },
                 "numClassesPerDiscipline": {
-                    "type": "integer",
-                    "maximum": 3,
-                    "minimum": 3
+                    "type": "integer"
                 },
                 "semester_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 }
             }
         },
@@ -2154,9 +2317,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "hoursToAllocate": {
-                    "type": "integer",
-                    "maximum": 3,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string",
@@ -2191,13 +2352,28 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "maxLength": 30,
+                    "maxLength": 255,
                     "minLength": 3
                 },
                 "password": {
                     "type": "string",
                     "maxLength": 30,
                     "minLength": 8
+                }
+            }
+        },
+        "dto.DeleteEligibleDisciplineDto": {
+            "type": "object",
+            "required": [
+                "discipline_id",
+                "professor_id"
+            ],
+            "properties": {
+                "discipline_id": {
+                    "type": "integer"
+                },
+                "professor_id": {
+                    "type": "integer"
                 }
             }
         },
@@ -2222,7 +2398,6 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "dayOfWeek",
-                "professor_id",
                 "shift"
             ],
             "properties": {
@@ -2230,11 +2405,6 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 255,
                     "minLength": 3
-                },
-                "professor_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
                 },
                 "shift": {
                     "type": "string",
@@ -2262,20 +2432,12 @@ const docTemplate = `{
         "dto.UpdateDisciplineDto": {
             "type": "object",
             "required": [
-                "course_id",
                 "credits",
                 "name"
             ],
             "properties": {
-                "course_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
-                },
                 "credits": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string",
@@ -2287,31 +2449,15 @@ const docTemplate = `{
         "dto.UpdateParameterizationDto": {
             "type": "object",
             "required": [
-                "course_id",
                 "maxCreditsToOffer",
-                "numClassesPerDiscipline",
-                "semester_id"
+                "numClassesPerDiscipline"
             ],
             "properties": {
-                "course_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
-                },
                 "maxCreditsToOffer": {
-                    "type": "integer",
-                    "maximum": 3,
-                    "minimum": 3
+                    "type": "integer"
                 },
                 "numClassesPerDiscipline": {
-                    "type": "integer",
-                    "maximum": 3,
-                    "minimum": 3
-                },
-                "semester_id": {
-                    "type": "integer",
-                    "maximum": 100,
-                    "minimum": 1
+                    "type": "integer"
                 }
             }
         },
@@ -2323,9 +2469,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "hoursToAllocate": {
-                    "type": "integer",
-                    "maximum": 3,
-                    "minimum": 1
+                    "type": "integer"
                 },
                 "name": {
                     "type": "string",
@@ -2352,7 +2496,7 @@ const docTemplate = `{
                 },
                 "name": {
                     "type": "string",
-                    "maxLength": 30,
+                    "maxLength": 255,
                     "minLength": 3
                 }
             }
@@ -2411,6 +2555,9 @@ const docTemplate = `{
         "response.AvailabilityResponse": {
             "type": "object",
             "properties": {
+                "'id'": {
+                    "type": "integer"
+                },
                 "dayOfWeek": {
                     "type": "string"
                 },
@@ -2428,6 +2575,9 @@ const docTemplate = `{
         "response.CourseResponse": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "location": {
                     "type": "string"
                 },
@@ -2449,6 +2599,9 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "credits": {
+                    "type": "integer"
+                },
+                "id": {
                     "type": "integer"
                 },
                 "name": {
@@ -2542,6 +2695,9 @@ const docTemplate = `{
                 "course_id": {
                     "type": "integer"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "maxCreditsToOffer": {
                     "type": "integer"
                 },
@@ -2562,6 +2718,9 @@ const docTemplate = `{
                 "hoursToAllocate": {
                     "type": "integer"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 },
@@ -2573,6 +2732,9 @@ const docTemplate = `{
         "response.SemesterResponse": {
             "type": "object",
             "properties": {
+                "id": {
+                    "type": "integer"
+                },
                 "semester": {
                     "type": "string"
                 },

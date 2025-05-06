@@ -46,10 +46,9 @@ func (s *service) UpdateAvailability(ctx context.Context, u dto.UpdateAvailabili
 	}
 
 	updateAvailability := entity.AvailabilityEntity{
-		UUID:        uuid,
-		DayOfWeek:   u.DayOfWeek,
-		Shift:       u.Shift,
-		ProfessorID: u.ProfessorId,
+		UUID:      uuid,
+		DayOfWeek: u.DayOfWeek,
+		Shift:     u.Shift,
 	}
 
 	err = s.repo.UpdateAvailability(ctx, &updateAvailability)
@@ -93,6 +92,7 @@ func (s *service) FindManyAvailabilities(ctx context.Context) (*response.ManyAva
 	availabilities := response.ManyAvailabilitiesResponse{}
 	for _, availabilityEntity := range findManyAvailabilities {
 		availabilityResponse := response.AvailabilityResponse{
+			Id:          availabilityEntity.ID,
 			UUID:        availabilityEntity.UUID.String(),
 			DayOfWeek:   availabilityEntity.DayOfWeek,
 			Shift:       availabilityEntity.Shift,
@@ -114,6 +114,7 @@ func (s *service) FindManyAvailabilitiesByProfessorId(ctx context.Context, cours
 	availabilitiesByProfessor := response.ManyAvailabilitiesResponse{}
 	for _, availabilityEntity := range findManyAvailabilitiesByProfessor {
 		availabilityResponse := response.AvailabilityResponse{
+			Id:          availabilityEntity.ID,
 			UUID:        availabilityEntity.UUID.String(),
 			DayOfWeek:   availabilityEntity.DayOfWeek,
 			Shift:       availabilityEntity.Shift,

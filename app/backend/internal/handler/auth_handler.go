@@ -48,12 +48,20 @@ func (h *handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	token, err := h.userService.Login(r.Context(), req)
 	if err != nil {
-		if err.Error() == "user not found" || err.Error() == "invalid password" {
+		if err.Error() == "user not found" || err.Error() == "sql: no rows in result set" {
+			w.WriteHeader(http.StatusNotFound)
+			msg := httperr.NewUnauthorizedRequestError("invalid credentials")
+			json.NewEncoder(w).Encode(msg)
+			return
+		}
+
+		if err.Error() == "invalid password" {
 			w.WriteHeader(http.StatusUnauthorized)
 			msg := httperr.NewUnauthorizedRequestError("invalid credentials")
 			json.NewEncoder(w).Encode(msg)
 			return
 		}
+
 		w.WriteHeader(http.StatusBadRequest)
 		msg := httperr.NewBadRequestError(err.Error())
 		json.NewEncoder(w).Encode(msg)
